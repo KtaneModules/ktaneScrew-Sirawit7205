@@ -2,100 +2,107 @@
 <html class="no-js"><!--<![endif]--><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Keep Talking and Nobody Explodes Example Manual Page</title>
+    <title>Screw — Keep Talking and Nobody Explodes</title>
     <meta name="viewport" content="initial-scale=1"> 
 	<link href='https://fonts.googleapis.com/css?family=Special+Elite' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="css/normalize.css">
     <link rel="stylesheet" type="text/css" href="css/main.css">
+	<style>
+		.boxed{
+			border: 3px solid black;
+			padding-left: 3px;
+			line-height: 105%;
+		}
+	</style>
 </head>
 <body>
 <div class="section">
-    <div class="page page-bg-01">
+    <div class="page page-bg-02">
         		<div class="page-header">
 			<span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
-			<span class="page-header-section-title">YOUR MODULE TITLE HERE</span>
+			<span class="page-header-section-title">Screw</span>
 		</div>
         <div class="page-content">
-    	    <img src="img/Component.svg" class="diagram">
-            <h2>On the Subject of YOUR MODULE</h2>
+    	    <img src="img/Screw.svg" class="diagram">
+            <h2>On the Subject of Screw</h2>
             <p class="flavour-text">
-					Text here should only set a mood and not contain anything necessary to defuse the bomb. For official modules we don't refer to the bomber as we don't really want to imply anything about them.
+					You know what? Screw this module...
 			</p>
-
-			<p> The rest of this section is freeform and contains the rules for your module. Here are a few sample tables from our manual you can optionally use as a template if you wish.</p>
-			<!-- Here are some examples of tables that we use in the manual that you can use if it makes sense -->
-			<!-- Wires table -->
-			<table>
-				<tbody>
-					<tr>
-						<td><strong><em>3 wires:</em></strong><br>
-						If there are no red wires, cut the second wire.<br>
-						Otherwise, if the last wire is white, cut the last wire.<br>
-						Otherwise, if there is more than one blue wire, cut the last
-						blue wire.<br>
-						Otherwise, cut the last wire.</td>
-					</tr>
-					<tr>
-						<td><strong><em>4 wires:</em></strong><br>
-						If there is more than one red wire and the last digit of the
-						serial number is odd, cut the last red wire.<br>
-						Otherwise, if the last wire is yellow and there are no red
-						wires, cut the first wire.<br>
-						Otherwise, if there is exactly one blue wire, cut the first
-						wire.<br>
-						Otherwise, if there is more than one yellow wire, cut the last
-						wire.<br>
-						Otherwise, cut the second wire.</td>
-					</tr>
-					<tr>
-						<td><strong><em>5 wires:</em></strong><br>
-						If the last wire is black and the last digit of the serial
-						number is odd, cut the fourth wire.<br>
-						Otherwise, if there is exactly one red wire and there is more
-						than one yellow wire, cut the first wire.<br>
-						Otherwise, if there are no black wires, cut the second
-						wire.<br>
-						Otherwise, cut the first wire.</td>
-					</tr>
-				</tbody>
-			</table>
-			<br>
-			<br>
-			<!-- Simon table -->
-			<table class="repeaters-table">
-				<tbody>
-					<tr>
-						<th class="repeaters-spacer" colspan="2"></th>
-						<th>Red Flash</th>
-						<th>Blue Flash</th>
-						<th>Green Flash</th>
-						<th>Yellow Flash</th>
-					</tr>
-					<tr>
-						<th rowspan="3">Button&nbsp;to&nbsp;press:</th>
-						<th>No&nbsp;Strikes</th>
-						<td>Blue</td>
-						<td>Yellow</td>
-						<td>Green</td>
-						<td>Red</td>
-					</tr>
-					<tr>
-						<th>1&nbsp;Strike</th>
-						<td>Red</td>
-						<td>Blue</td>
-						<td>Yellow</td>
-						<td>Green</td>
-					</tr>
-					<tr>
-						<th>2&nbsp;Strikes</th>
-						<td>Yellow</td>
-						<td>Green</td>
-						<td>Blue</td>
-						<td>Red</td>
-					</tr>
-				</tbody>
-			</table>
+			
+			<ul>
+				<li>A Screws module has 4 buttons with labels A, B, C, and D.</li>
+				<li>6 holes with colored outlines are located below the buttons.</li>
+				<li>The buttons’ functions change based on which hole the screw is in.</li>
+				<li>Pressing an incorrect button will incur a strike. However, screwing a screw into the wrong hole will <u>not</u> incur a strike.</li>
+				<li>Buttons neither advance towards solving the module nor give a strike if a screw is not inserted into any of the holes.</li>
+				<li>At the start of the bomb, the screw is always in the top left hole.</li>
+				<li>To complete a stage, you must remove the screw from the current hole, screw it the next correct hole, then press the correct button.</li>
+				<li>Once five stages have been solved, the module will disarm.</li>
+			</ul>
+			
+			<h3>Firstly, determine which color hole the screw must go into.</h3>
+			<ul>
+				<li>The colored outlines are numbered in reading order from 1-6.</li>
+				<li>The first hole’s position is determined by the number of batteries.</li>
+				<li>The second hole’s position is determined by the rightmost digit in the serial number.</li>
+				<li>The third hole’s position is determined by the number of ports.</li>
+				<li>The fourth hole’s position is determined by the number of lit indicators.</li>
+				<li>The fifth hole’s position is determined by the number of unlit indicators.</li>
+				<li>If a hole is already taken up by the screw, move to the next hole in the numeric order. If a value is 7 or greater, modulo by 6 to a value between 1-6. If a value is 0, the actual value is 1.</li>
+			</ul>	
         </div>
+		<div class="page-footer relative-footer">Page 1 of 2</div>
     </div>
+	
+	<div class="page page-bg-04">
+        		<div class="page-header">
+			<span class="page-header-doc-title">Keep Talking and Nobody Explodes Mod</span>
+			<span class="page-header-section-title">Screw</span>
+		</div>
+        <div class="page-content">
+		
+			<h3>Secondly, determine which button must be pressed to progress using the following tables:</h3>	
+			<div class="boxed">
+				<h3>Outline color is red, yellow, or green:</h3>
+					<h4>If the hole is in the top row:</h4>
+					<ul>
+						<li>If the hole’s position in the row is equal to the number of battery holders, press the button in the fourth position.</li>
+						<li>Otherwise, if the letter A is in the first or third position, press the button labeled C.</li>
+						<li>Otherwise, if the bomb has indicators CLR, FRK, or TRN, press the button in the third position.</li>
+						<li>Otherwise, if the hole shares the same row as the blue hole, press the button in the first position.</li>
+						<li>Otherwise, press the button labeled B.</li>
+					</ul>
+					
+					<h4>If the hole is in the bottom row:</h4>
+					<ul>
+						<li>If the hole’s position in the row is equal to the number of port types, press the button in the second position.</li>
+						<li>Otherwise, if the hole’s position in the row is equal to the number of batteries, press the button labeled D.</li>
+						<li>Otherwise, if the hole is not opposite the white hole, press the button labeled A.</li>
+						<li>Otherwise, if the hole is adjacent to the magenta hole, press the button labeled C.</li>
+						<li>Otherwise, press the button in the first position.</li>
+					</ul>
+					
+				<h3>Outline color is blue, magenta, or white:</h3>
+					<h4>If the hole is in the top row:</h4>
+					<ul>
+						<li>If the hole’s position in the row is equal to the number of port types, press the button labeled D.</li>
+						<li>Otherwise, if the letter C is in the second or fourth position, press the button labeled B.</li>
+						<li>Otherwise, if the bomb has indicators CAR, FRQ, or SND, press the button in the fourth position.</li>
+						<li>Otherwise, if the hole shares the same row as the red hole, press the button in the second position.</li>
+						<li>Otherwise, press the button labeled A.</li>
+					</ul>
+					
+					<h4>If the hole is in the bottom row:</h4>
+					<ul>
+						<li>If the hole’s position in the row is equal to the number of port plates, press the button in the second position.</li>
+						<li>Otherwise, if the hole’s position in the row is equal to the total number of indicators, press the button labeled A.</li>
+						<li>Otherwise, if the hole is adjacent to the yellow hole, press the button labeled C.</li>
+						<li>Otherwise, if the hole is not opposite the green hole, press the button labeled D.</li>
+						<li>Otherwise, press the button in the fourth position.</li>
+					</ul>
+			</div>
+		</div>
+		<div class="page-footer relative-footer">Page 2 of 2</div>
+	</div>
 </div>
 </body></html>
