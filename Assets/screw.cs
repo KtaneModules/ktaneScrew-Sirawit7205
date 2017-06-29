@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using KMHelper;
@@ -244,7 +245,7 @@ public class screw : MonoBehaviour {
         //unscrew
         if (_screwInsert == true && n + 1 == screwLoc && !_coroutineRunning && _lightsOn && !_isSolved)
         {
-            //Audio.PlaySoundAtTransform("screwdriver-sound", holes[n].transform);
+            Audio.PlaySoundAtTransform("screwdriver_sound", holes[n].transform);
             StartCoroutine("screwOut");
             Debug.LogFormat("[Screw #{0}] Unscrew from hole {1}", _moduleId, screwLoc);
         }
@@ -253,7 +254,7 @@ public class screw : MonoBehaviour {
         if(_screwInsert == false && !_coroutineRunning && _lightsOn && !_isSolved)
         {
             screwLoc = n + 1;
-            //Audio.PlaySoundAtTransform("screwdriver-sound", holes[n].transform);
+            Audio.PlaySoundAtTransform("screwdriver_sound", holes[n].transform);
             StartCoroutine("screwIn");
             Debug.LogFormat("[Screw #{0}] Screw in to hole {1}", _moduleId, screwLoc);
         }
@@ -261,24 +262,23 @@ public class screw : MonoBehaviour {
 
     IEnumerator screwOut()
     {
-        float smooth = 50f, time = 1f;
+        float smooth = 100f, time = 0.5f;
         float rotateDelta = 1f / (time * smooth), transformDelta = 0.04f / (time * smooth);
         float rotateCurrent = 0f, transformCurrent = -0.02f;
 
         _coroutineRunning = true;
         cross_screw.gameObject.transform.localPosition = new Vector3(holeXPos[screwLoc - 1], transformCurrent, holeZPos[screwLoc - 1]);
-        screwdriver.GetComponent<MeshRenderer>().enabled = true;
+        //screwdriver.GetComponent<MeshRenderer>().enabled = true;
 
         for (int i = 0; i <= time * smooth; i++)
         {
             cross_screw.gameObject.transform.localPosition = new Vector3(holeXPos[screwLoc - 1], transformCurrent, holeZPos[screwLoc - 1]);
-            //cross_screw.gameObject.transform.localRotation = Quaternion.Slerp(Quaternion.Euler(0, 1800, 0), Quaternion.Euler(0, 0, 0), rotateCurrent);
             cross_screw.gameObject.transform.Rotate(Vector3.up, -15);
             rotateCurrent += rotateDelta;
             transformCurrent += transformDelta;
             yield return new WaitForSeconds(time / smooth);
         }
-        screwdriver.GetComponent<MeshRenderer>().enabled = false;
+        //screwdriver.GetComponent<MeshRenderer>().enabled = false;
         cross_screw.GetComponent<MeshRenderer>().enabled = false;
         _coroutineRunning = false;
         _screwInsert = false;
@@ -287,28 +287,74 @@ public class screw : MonoBehaviour {
 
     IEnumerator screwIn()
     {
-        float smooth = 50f, time = 1f;
+        float smooth = 100f, time = 0.5f;
         float rotateDelta = 1f / (time * smooth), transformDelta = 0.04f / (time * smooth);
         float rotateCurrent = 0f, transformCurrent = 0.02f;
 
         _coroutineRunning = true;
         cross_screw.gameObject.transform.localPosition = new Vector3(holeXPos[screwLoc - 1], transformCurrent, holeZPos[screwLoc - 1]);
-        screwdriver.GetComponent<MeshRenderer>().enabled = true;
+        //screwdriver.GetComponent<MeshRenderer>().enabled = true;
         cross_screw.GetComponent<MeshRenderer>().enabled = true;
 
         for (int i = 0; i <= time * smooth; i++)
         {
             cross_screw.gameObject.transform.localPosition = new Vector3(holeXPos[screwLoc - 1], transformCurrent, holeZPos[screwLoc - 1]);
-            //cross_screw.gameObject.transform.localRotation = Quaternion.Slerp(Quaternion.Euler(0, 0, 0), Quaternion.Euler(0, 1800, 0), rotateCurrent);
             cross_screw.gameObject.transform.Rotate(Vector3.up, 15);
             rotateCurrent += rotateDelta;
             transformCurrent -= transformDelta;
             yield return new WaitForSeconds(time / smooth);
         }
-        screwdriver.GetComponent<MeshRenderer>().enabled = false;
+        //screwdriver.GetComponent<MeshRenderer>().enabled = false;
         _coroutineRunning = false;
         _screwInsert = true;
         yield return null;
     }
 
+    KMSelectable[] ProcessTwitchCommand(string command)
+    {
+        var select = new List<KMSelectable>();
+        command = command.ToLowerInvariant().Trim();
+
+        if(command.Equals("unscrew"))
+        {
+            return new[] { holes[screwLoc - 1] };
+        }
+
+        if(Regex.IsMatch(command, @"^screw [a-zA-Z1-6]+$"))
+        {
+            command = command.Substring(6).Trim();
+
+            switch(command)
+            {
+                case "1": case "tl": case "lt": case "topleft": case "lefttop": select.Add(holes[0]); break;
+                case "2": case "tm": case "mt": case "topmiddle": case "middletop": select.Add(holes[1]); break;
+                case "3": case "tr": case "rt": case "topright": case "righttop": select.Add(holes[2]); break;
+                case "4": case "bl": case "lb": case "buttomleft": case "leftbuttom": select.Add(holes[3]); break;
+                case "5": case "bm": case "mb": case "bottommiddle": case "middlebottom": select.Add(holes[4]); break;
+                case "6": case "br": case "rb": case "bottomright": case "rightbottom": select.Add(holes[5]); break;
+                default: return null;
+            }
+            return select.ToArray();
+        }
+
+        if(Regex.IsMatch(command, @"^press [a-zA-Z1-4]+$"))
+        {
+            command = command.Substring(6).Trim();
+
+            switch(command)
+            {
+                case "1": select.Add(btn[0]); break;
+                case "2": select.Add(btn[1]); break;
+                case "3": select.Add(btn[2]); break;
+                case "4": select.Add(btn[3]); break;
+                case "a": select.Add(btn[System.Array.IndexOf(button_order, 0)]); break;
+                case "b": select.Add(btn[System.Array.IndexOf(button_order, 1)]); break;
+                case "c": select.Add(btn[System.Array.IndexOf(button_order, 2)]); break;
+                case "d": select.Add(btn[System.Array.IndexOf(button_order, 3)]); break;
+                default: return null;
+            }
+            return select.ToArray();
+        }
+        return null;
+    }
 }
