@@ -262,7 +262,7 @@ public class screw : MonoBehaviour {
 
     IEnumerator screwOut()
     {
-        float smooth = 100f, time = 0.5f;
+        float smooth = 75f, time = 0.5f;
         float rotateDelta = 1f / (time * smooth), transformDelta = 0.04f / (time * smooth);
         float rotateCurrent = 0f, transformCurrent = -0.02f;
 
@@ -287,7 +287,7 @@ public class screw : MonoBehaviour {
 
     IEnumerator screwIn()
     {
-        float smooth = 100f, time = 0.5f;
+        float smooth = 75f, time = 0.5f;
         float rotateDelta = 1f / (time * smooth), transformDelta = 0.04f / (time * smooth);
         float rotateCurrent = 0f, transformCurrent = 0.02f;
 
