@@ -109,26 +109,56 @@ public class screw : MonoBehaviour {
 
         //determine screw position
         if (stage == 1)
+        {
             pos = Info.GetBatteryCount();
+            Debug.LogFormat("[Screw #{0}] Screw position = Battery count: {1}", _moduleId, pos);
+        }
         else if (stage == 2)
+        {
             pos = Info.GetSerialNumberNumbers().Last();
+            Debug.LogFormat("[Screw #{0}] Screw position = Last digit of serial: {1}", _moduleId, pos);
+        }
         else if (stage == 3)
+        {
             pos = Info.GetPortCount();
+            Debug.LogFormat("[Screw #{0}] Screw position = Amount of ports: {1}", _moduleId, pos);
+        }
         else if (stage == 4)
+        {
             pos = Info.GetOnIndicators().Count();
+            Debug.LogFormat("[Screw #{0}] Screw position = Lit indicator count: {1}", _moduleId, pos);
+        }
         else
+        {
             pos = Info.GetOffIndicators().Count();
+            Debug.LogFormat("[Screw #{0}] Screw position = Unlit indicator count: {1}", _moduleId, pos);
+        }
 
-        if (pos > 6)
-            pos %= 6;
+        while (pos > 6)
+        {
+            pos -= 6;
+            Debug.LogFormat("[Screw #{0}] Substract 6 to {1}.", _moduleId, pos);
+        }
         if (pos == 0)
+        {
             pos = 1;
+            Debug.LogFormat("[Screw #{0}] Position is 0, set to 1.", _moduleId);
+        }
         if (screwLoc == pos)
+        {
             pos++;
-        if (pos > 6)
-            pos %= 6;
+            Debug.LogFormat("[Screw #{0}] Screw is already in this hole, set to {1}.", _moduleId, pos);
+        }
+        while(pos > 6)
+        {
+            pos -= 6;
+            Debug.LogFormat("[Screw #{0}] Substract 6 to {1}.", _moduleId, pos);
+        }
         if (pos == 0)
+        {
             pos = 1;
+            Debug.LogFormat("[Screw #{0}] Position is 0, set to 1.", _moduleId);
+        }
 
         screwAns = pos;
         Debug.LogFormat("[Screw #{0}] Screw must be at position {1}.", _moduleId, screwAns);
@@ -148,29 +178,59 @@ public class screw : MonoBehaviour {
             if(pos < 4)
             {
                 if (pos == Info.GetBatteryHolderCount())
+                {
                     btnAns = 3;
+                    Debug.LogFormat("[Screw #{0}] Position in the row = Battery holder: 4th position.", _moduleId);
+                }
                 else if (System.Array.IndexOf(button_order, 0) == 0 || System.Array.IndexOf(button_order, 0) == 2)
+                {
                     btnAns = System.Array.IndexOf(button_order, 2);
+                    Debug.LogFormat("[Screw #{0}] A in 1st/3rd: Press C.", _moduleId);
+                }
                 else if (Info.IsIndicatorPresent("CLR") || Info.IsIndicatorPresent("FRK") || Info.IsIndicatorPresent("TRN"))
+                {
                     btnAns = 2;
+                    Debug.LogFormat("[Screw #{0}] CLR, FRK, or TRN: 3rd position.", _moduleId);
+                }
                 else if (System.Array.IndexOf(outline_order, 0) < 3)
+                {
                     btnAns = 0;
+                    Debug.LogFormat("[Screw #{0}] Same row as blue: 1st position.", _moduleId);
+                }
                 else
+                {
                     btnAns = System.Array.IndexOf(button_order, 1);
+                    Debug.LogFormat("[Screw #{0}] Otherwise: Press B.", _moduleId);
+                }
             }
             //bottom row
             else
             {
                 if (pos - 3 == Info.GetPorts().Distinct().Count())
+                {
                     btnAns = 1;
+                    Debug.LogFormat("[Screw #{0}] Position in the row = Port types: 2nd position.", _moduleId);
+                }
                 else if (pos - 3 == Info.GetBatteryCount())
+                {
                     btnAns = System.Array.IndexOf(button_order, 3);
+                    Debug.LogFormat("[Screw #{0}] Position in the row = Battery count: Press D.", _moduleId);
+                }
                 else if (pos - 3 != System.Array.IndexOf(outline_order, 4) + 1)
+                {
                     btnAns = System.Array.IndexOf(button_order, 0);
+                    Debug.LogFormat("[Screw #{0}] Not opposite to white: Press A.", _moduleId);
+                }
                 else if ((pos == 4 && mPos == 5) || (pos == 5 && (mPos == 4 || mPos == 6)) || (pos == 6 && mPos == 4))
+                {
                     btnAns = System.Array.IndexOf(button_order, 2);
+                    Debug.LogFormat("[Screw #{0}] Adjacent to magenta: Press C.", _moduleId);
+                }
                 else
+                {
                     btnAns = 0;
+                    Debug.LogFormat("[Screw #{0}] Otherwise: 1st position.", _moduleId);
+                }
             }
         }
         //for color B, M, W
@@ -180,29 +240,59 @@ public class screw : MonoBehaviour {
             if(pos < 4)
             {
                 if (pos == Info.GetPorts().Distinct().Count())
+                {
                     btnAns = System.Array.IndexOf(button_order, 3);
+                    Debug.LogFormat("[Screw #{0}] Position in the row = Port types: Press D.", _moduleId);
+                }
                 else if (System.Array.IndexOf(button_order, 2) == 1 || System.Array.IndexOf(button_order, 2) == 3)
+                {
                     btnAns = System.Array.IndexOf(button_order, 1);
+                    Debug.LogFormat("[Screw #{0}] C in 2nd/4th: Press B.", _moduleId);
+                }
                 else if (Info.IsIndicatorPresent("CAR") || Info.IsIndicatorPresent("FRQ") || Info.IsIndicatorPresent("SND"))
+                {
                     btnAns = 3;
+                    Debug.LogFormat("[Screw #{0}] CAR, FRQ, or SND: 4th position.", _moduleId);
+                }
                 else if (System.Array.IndexOf(outline_order, 3) < 3)
+                {
                     btnAns = 1;
+                    Debug.LogFormat("[Screw #{0}] Same row as red: 2nd position.", _moduleId);
+                }
                 else
+                {
                     btnAns = System.Array.IndexOf(button_order, 0);
+                    Debug.LogFormat("[Screw #{0}] Otherwise: Press A.", _moduleId);
+                }
             }
             //bottom row
             else
             {
                 if (pos - 3 == Info.GetPortPlateCount())
+                {
                     btnAns = 1;
+                    Debug.LogFormat("[Screw #{0}] Position in the row = Port plate count: 2nd position.", _moduleId);
+                }
                 else if (pos - 3 == Info.GetIndicators().Count())
+                {
                     btnAns = System.Array.IndexOf(button_order, 0);
+                    Debug.LogFormat("[Screw #{0}] Position in the row = Indicator count: Press A.", _moduleId);
+                }
                 else if ((pos == 4 && yPos == 5) || (pos == 5 && (yPos == 4 || yPos == 6)) || (pos == 6 && yPos == 4))
+                {
                     btnAns = System.Array.IndexOf(button_order, 2);
+                    Debug.LogFormat("[Screw #{0}] Adjacent to yellow: Press C.", _moduleId);
+                }
                 else if (pos - 3 != System.Array.IndexOf(outline_order, 1) + 1)
+                {
                     btnAns = System.Array.IndexOf(button_order, 3);
+                    Debug.LogFormat("[Screw #{0}] Not opposite to green: Press D.", _moduleId);
+                }
                 else
+                {
                     btnAns = 3;
+                    Debug.LogFormat("[Screw #{0}] Otherwise: 4th position.", _moduleId);
+                }
             }
         }
     }
