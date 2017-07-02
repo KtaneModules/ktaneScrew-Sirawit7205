@@ -305,7 +305,7 @@ public class screw : MonoBehaviour {
         if (_screwInsert && !_coroutineRunning && _lightsOn && !_isSolved)
         {
             Debug.LogFormat("[Screw #{0}] Screw at position {1}, expected {2}.", _moduleId, screwLoc, screwAns);
-            Debug.LogFormat("[Screw #{1}] Pushed button {1} at {2}, expected {3} at {4}.", _moduleId, (char)(button_order[n] + 65), n, (char)(button_order[btnAns] + 65), btnAns);
+            Debug.LogFormat("[Screw #{0}] Pushed button {1} at {2}, expected {3} at {4}.", _moduleId, (char)(button_order[n] + 65), n, (char)(button_order[btnAns] + 65), btnAns);
 
             if (screwLoc == screwAns && n == btnAns)
             {
