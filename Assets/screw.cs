@@ -17,11 +17,12 @@ public class screw : MonoBehaviour {
     public GameObject cross_screw, screwdriver;
     public MeshRenderer[] outlines;
     public TextMesh[] btnText;
+    public TextMesh screenText;
     public Texture[] outlineTexture;
 
     private int screwLoc = 1, screwAns, btnAns, stageCnt = 1;
     private int[] outline_order = { 0, 0, 0, 0, 0, 0 }, button_order = { 0, 0, 0, 0 };
-    private string[] color_text = { "Blue", "Green", "Magenta", "Red", "White", "Yellow" };
+    private string[] color_text = { "Blue", "Green", "Magenta", "Red", "White", "Yellow" }, stage_text = { "๑", "๒", "๓", "๔", "๕" };
     private float[] holeXPos = { -0.06f, 0f, 0.06f, -0.06f, 0f, 0.06f }, holeZPos = { -0.02f, -0.02f, -0.02f, -0.06f, -0.06f, -0.06f };
     private bool _lightsOn = false, _isSolved = false, _screwInsert = true, _coroutineRunning = false;
 
@@ -165,6 +166,8 @@ public class screw : MonoBehaviour {
 
         findBtn(pos);
         Debug.LogFormat("[Screw #{0}] Must push button {1} at position {2}", _moduleId, (char)(button_order[btnAns] + 65), btnAns + 1);
+
+        screenText.text = stage_text[stage - 1];
     }
 
     void findBtn(int pos)
@@ -221,7 +224,7 @@ public class screw : MonoBehaviour {
                     btnAns = System.Array.IndexOf(button_order, 0);
                     Debug.LogFormat("[Screw #{0}] Not opposite to white: Press A.", _moduleId);
                 }
-                else if ((pos == 4 && mPos == 5) || (pos == 5 && (mPos == 4 || mPos == 6)) || (pos == 6 && mPos == 4))
+                else if ((pos == 4 && mPos == 5) || (pos == 5 && (mPos == 4 || mPos == 6)) || (pos == 6 && mPos == 5))
                 {
                     btnAns = System.Array.IndexOf(button_order, 2);
                     Debug.LogFormat("[Screw #{0}] Adjacent to magenta: Press C.", _moduleId);
@@ -278,7 +281,7 @@ public class screw : MonoBehaviour {
                     btnAns = System.Array.IndexOf(button_order, 0);
                     Debug.LogFormat("[Screw #{0}] Position in the row = Indicator count: Press A.", _moduleId);
                 }
-                else if ((pos == 4 && yPos == 5) || (pos == 5 && (yPos == 4 || yPos == 6)) || (pos == 6 && yPos == 4))
+                else if ((pos == 4 && yPos == 5) || (pos == 5 && (yPos == 4 || yPos == 6)) || (pos == 6 && yPos == 5))
                 {
                     btnAns = System.Array.IndexOf(button_order, 2);
                     Debug.LogFormat("[Screw #{0}] Adjacent to yellow: Press C.", _moduleId);
@@ -305,7 +308,7 @@ public class screw : MonoBehaviour {
         if (_screwInsert && !_coroutineRunning && _lightsOn && !_isSolved)
         {
             Debug.LogFormat("[Screw #{0}] Screw at position {1}, expected {2}.", _moduleId, screwLoc, screwAns);
-            Debug.LogFormat("[Screw #{0}] Pushed button {1} at {2}, expected {3} at {4}.", _moduleId, (char)(button_order[n] + 65), n, (char)(button_order[btnAns] + 65), btnAns);
+            Debug.LogFormat("[Screw #{0}] Pushed button {1} at {2}, expected {3} at {4}.", _moduleId, (char)(button_order[n] + 65), n + 1, (char)(button_order[btnAns] + 65), btnAns + 1);
 
             if (screwLoc == screwAns && n == btnAns)
             {
@@ -314,6 +317,7 @@ public class screw : MonoBehaviour {
                     Debug.LogFormat("[Screw #{0}] Stage 5 passed! Module passed!",_moduleId);
                     Module.HandlePass();
                     _isSolved = true;
+                    screenText.text = string.Empty;
                 }
                 else
                 {

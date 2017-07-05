@@ -13,8 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WorkshopPublishedFileID: 961153662
   Title: The Screw
-  Description: "You know what? Screw this module...\r\n\r\nHTML manual: https://ktane.timwi.de/HTML/Screw.html\r\nPDF
-    manual: https://ktane.timwi.de/PDF/Screw.pdf\r\n\r\nModule ID: screw\r\n\r\nIdeas
+  Description: "You know what? Screw this module...\r\n\r\nHTML manual: https://ktane.timwi.de/HTML/The%20Screw.html\r\nPDF
+    manual: https://ktane.timwi.de/PDF/The%20Screw.pdf\r\n\r\nModule ID: screw\r\n\r\nIdeas
     by Zeke\r\n\r\nThis module uses these sounds from freesound:\r\nSocket Wrench
     by TheGertz ( http://freesound.org/people/TheGertz/ ) The use is under CC BY 3.0
     license.\r\n\r\nCross Screw model by CaitSith2.\r\n\r\nWorkplace tools asset pack

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Name: ModConfig
   m_EditorClassIdentifier: 
   id: screw
-  title: Screw
-  version: 1.0
+  title: The Screw
+  version: 1.1
   outputFolder: build
