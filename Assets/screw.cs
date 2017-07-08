@@ -22,7 +22,7 @@ public class screw : MonoBehaviour {
 
     private int screwLoc = 1, screwAns, btnAns, stageCnt = 1;
     private int[] outline_order = { 0, 0, 0, 0, 0, 0 }, button_order = { 0, 0, 0, 0 };
-    private string[] color_text = { "Blue", "Green", "Magenta", "Red", "White", "Yellow" }, stage_text = { "๑", "๒", "๓", "๔", "๕" };
+    private string[] color_text = { "Blue", "Green", "Magenta", "Red", "White", "Yellow" };
     private float[] holeXPos = { -0.06f, 0f, 0.06f, -0.06f, 0f, 0.06f }, holeZPos = { -0.02f, -0.02f, -0.02f, -0.06f, -0.06f, -0.06f };
     private bool _lightsOn = false, _isSolved = false, _screwInsert = true, _coroutineRunning = false;
 
@@ -111,28 +111,18 @@ public class screw : MonoBehaviour {
         //determine screw position
         if (stage == 1)
         {
-            pos = Info.GetBatteryCount();
-            Debug.LogFormat("[Screw #{0}] Screw position = Battery count: {1}", _moduleId, pos);
+            pos = Info.GetBatteryCount() + Info.GetOffIndicators().Count();
+            Debug.LogFormat("[Screw #{0}] Screw position = Battery count + Unlit indicator count: {1}", _moduleId, pos);
         }
         else if (stage == 2)
         {
-            pos = Info.GetSerialNumberNumbers().Last();
-            Debug.LogFormat("[Screw #{0}] Screw position = Last digit of serial: {1}", _moduleId, pos);
-        }
-        else if (stage == 3)
-        {
-            pos = Info.GetPortCount();
-            Debug.LogFormat("[Screw #{0}] Screw position = Amount of ports: {1}", _moduleId, pos);
-        }
-        else if (stage == 4)
-        {
-            pos = Info.GetOnIndicators().Count();
-            Debug.LogFormat("[Screw #{0}] Screw position = Lit indicator count: {1}", _moduleId, pos);
+            pos = Info.GetSerialNumberNumbers().Last() + Info.GetOnIndicators().Count();
+            Debug.LogFormat("[Screw #{0}] Screw position = Last digit of serial + Lit indicator count: {1}", _moduleId, pos);
         }
         else
         {
-            pos = Info.GetOffIndicators().Count();
-            Debug.LogFormat("[Screw #{0}] Screw position = Unlit indicator count: {1}", _moduleId, pos);
+            pos = Info.GetPortCount() + Info.GetBatteryHolderCount();
+            Debug.LogFormat("[Screw #{0}] Screw position = Amount of ports + Battery holder count: {1}", _moduleId, pos);
         }
 
         while (pos > 6)
@@ -167,7 +157,7 @@ public class screw : MonoBehaviour {
         findBtn(pos);
         Debug.LogFormat("[Screw #{0}] Must push button {1} at position {2}", _moduleId, (char)(button_order[btnAns] + 65), btnAns + 1);
 
-        screenText.text = stage_text[stage - 1];
+        screenText.text = stage.ToString();
     }
 
     void findBtn(int pos)
@@ -312,9 +302,9 @@ public class screw : MonoBehaviour {
 
             if (screwLoc == screwAns && n == btnAns)
             {
-                if(stageCnt == 5)
+                if(stageCnt == 3)
                 {
-                    Debug.LogFormat("[Screw #{0}] Stage 5 passed! Module passed!",_moduleId);
+                    Debug.LogFormat("[Screw #{0}] Stage 3 passed! Module passed!",_moduleId);
                     Module.HandlePass();
                     _isSolved = true;
                     screenText.text = string.Empty;
