@@ -87,7 +87,7 @@ public class screw : MonoBehaviour {
         int[] select = { 0, 0, 0, 0 };
         int rand, pos;
 
-        Debug.LogFormat("[Screw #{0}] Stage {1} of 5", _moduleId, stage);
+        Debug.LogFormat("[Screw #{0}] Stage {1} of 3", _moduleId, stage);
 
         //random buttons
         for (int i = 0; i < 4; i++)
