@@ -86,6 +86,7 @@ public class screw : MonoBehaviour {
     {
         int[] select = { 0, 0, 0, 0 };
         int rand, pos;
+        string[] locations = { "top-left", "top-middle", "top-right", "bottom-left", "bottom-middle", "bottom-right" };
 
         Debug.LogFormat("[Screw #{0}] Stage {1} of 3", _moduleId, stage);
 
@@ -152,7 +153,7 @@ public class screw : MonoBehaviour {
         }
 
         screwAns = pos;
-        Debug.LogFormat("[Screw #{0}] Screw must be at position {1}.", _moduleId, screwAns);
+        Debug.LogFormat("[Screw #{0}] Screw must be in {1} {2} hole (position {3})", _moduleId, locations[screwAns - 1], color_text[outline_order[screwAns - 1]].ToLower(), screwAns);
 
         findBtn(pos);
         Debug.LogFormat("[Screw #{0}] Must push button {1} at position {2}", _moduleId, (char)(button_order[btnAns] + 65), btnAns + 1);
@@ -331,7 +332,6 @@ public class screw : MonoBehaviour {
         {
             Audio.PlaySoundAtTransform("screwdriver_sound", holes[n].transform);
             StartCoroutine("screwOut");
-            Debug.LogFormat("[Screw #{0}] Unscrew from hole {1}", _moduleId, screwLoc);
         }
 
         //screw
