@@ -394,6 +394,10 @@ public class screw : MonoBehaviour {
         yield return null;
     }
 
+#pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"Unscrew with “!{0} unscrew”. Put the screw in the 3rd hole with “!{0} screw 3” or “!{0} screw tr”. Press a button with “!{0} press A” (label) or “!{0} press 1” (position).";
+#pragma warning restore 414
+
     KMSelectable[] ProcessTwitchCommand(string command)
     {
         var select = new List<KMSelectable>();
