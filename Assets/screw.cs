@@ -3,30 +3,38 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using KMHelper;
 
-public class screw : MonoBehaviour {
+public class Screw : MonoBehaviour {
 
-    private static int _moduleIdCounter = 1;
-    private int _moduleId = 0;
+    public class ModSettingsJSON
+    {
+        public bool enableColorblindMode;
+        public string note;
+    }
 
     public KMAudio Audio;
     public KMBombModule Module;
     public KMBombInfo Info;
     public KMSelectable[] holes, btn;
+    public KMModSettings modSettings;
     public GameObject cross_screw, screwdriver;
+    public GameObject[] colorblindText;
     public MeshRenderer[] outlines;
     public TextMesh[] btnText;
     public TextMesh screenText;
     public Texture[] outlineTexture;
 
-    private int screwLoc = 1, screwAns, btnAns, stageCnt = 1;
-    private int[] outline_order = { 0, 0, 0, 0, 0, 0 }, button_order = { 0, 0, 0, 0 };
-    private string[] color_text = { "Blue", "Green", "Magenta", "Red", "White", "Yellow" };
-    private float[] holeXPos = { -0.06f, 0f, 0.06f, -0.06f, 0f, 0.06f }, holeZPos = { -0.02f, -0.02f, -0.02f, -0.06f, -0.06f, -0.06f };
-    private bool _lightsOn = false, _isSolved = false, _screwInsert = true, _coroutineRunning = false;
+    private static int _moduleIdCounter = 1;
+    private int _moduleId = 0;
 
-    // Use this for initialization
+    private int screwLoc = 1, screwAns, btnAns, stageCnt = 1;
+    private readonly int[] outline_order = { 0, 0, 0, 0, 0, 0 }, button_order = { 0, 0, 0, 0 };
+    private readonly string[] colorText = { "Blue", "Green", "Magenta", "Red", "White", "Yellow" };
+    private readonly float[] holeXPos = { -0.06f, 0f, 0.06f, -0.06f, 0f, 0.06f }, holeZPos = { -0.02f, -0.02f, -0.02f, -0.06f, -0.06f, -0.06f };
+    private bool _lightsOn = false, _isSolved = false, _screwInsert = true, _coroutineRunning = false, isColorBlind = false;
+
     void Start () {
         _moduleId = _moduleIdCounter++;
         Module.OnActivate += Init;
@@ -39,7 +47,7 @@ public class screw : MonoBehaviour {
             int j = i;
             btn[i].OnInteract += delegate ()
             {
-                handlePress(j);
+                HandlePress(j);
                 return false;
             };
         }
@@ -48,7 +56,7 @@ public class screw : MonoBehaviour {
             int j = i;
             holes[i].OnInteract += delegate ()
             {
-                handleScrew(j);
+                HandleScrew(j);
                 return false;
             };
         }
@@ -56,6 +64,20 @@ public class screw : MonoBehaviour {
 
     void Init()
     {
+        //check for color blind mode first!
+        isColorBlind = ColorBlindCheck();
+
+        //enable helper texts
+        if (isColorBlind)
+        {
+            Debug.LogFormat("[Screw #{0}] Colorblind mode enabled, showing colors of screw holes in text.", _moduleId);
+
+            for (int i = 0; i < 6; i++)
+            {
+                colorblindText[i].SetActive(true);
+            }
+        }
+
         //random outlines
         int[] select = { 0, 0, 0, 0, 0, 0 };
         int rand;
@@ -69,20 +91,22 @@ public class screw : MonoBehaviour {
                 {
                     select[rand] = 1;
                     outline_order[i] = rand;
+
                     outlines[i].material.mainTexture = outlineTexture[rand];
+                    if (isColorBlind) colorblindText[i].GetComponent<TextMesh>().text = colorText[rand][0].ToString();
                 }
                 else rand = -1;
             }
         }
         Debug.LogFormat("[Screw #{0}] Order of outlines: TOP {1} {2} {3} BOTTOM {4} {5} {6}", _moduleId
-            , color_text[outline_order[0]], color_text[outline_order[1]], color_text[outline_order[2]]
-            , color_text[outline_order[3]], color_text[outline_order[4]], color_text[outline_order[5]]);
-
-        generateStage(1);
+            , colorText[outline_order[0]], colorText[outline_order[1]], colorText[outline_order[2]]
+            , colorText[outline_order[3]], colorText[outline_order[4]], colorText[outline_order[5]]);
+        
+        GenerateStage(1);
         _lightsOn = true;
     }
 
-    void generateStage(int stage)
+    void GenerateStage(int stage)
     {
         int[] select = { 0, 0, 0, 0 };
         int rand, pos;
@@ -108,7 +132,7 @@ public class screw : MonoBehaviour {
         }
         Debug.LogFormat("[Screw #{0}] Order of buttons: {1} {2} {3} {4}", _moduleId
             , btnText[0].text, btnText[1].text, btnText[2].text, btnText[3].text);
-
+        
         //determine screw position
         if (stage == 1)
         {
@@ -153,15 +177,15 @@ public class screw : MonoBehaviour {
         }
 
         screwAns = pos;
-        Debug.LogFormat("[Screw #{0}] Screw must be in {1} {2} hole (position {3})", _moduleId, locations[screwAns - 1], color_text[outline_order[screwAns - 1]].ToLower(), screwAns);
+        Debug.LogFormat("[Screw #{0}] Screw must be in {1} {2} hole (position {3})", _moduleId, locations[screwAns - 1], colorText[outline_order[screwAns - 1]].ToLower(), screwAns);
 
-        findBtn(pos);
+        FindBtn(pos);
         Debug.LogFormat("[Screw #{0}] Must push button {1} at position {2}", _moduleId, (char)(button_order[btnAns] + 65), btnAns + 1);
 
         screenText.text = stage.ToString();
     }
 
-    void findBtn(int pos)
+    void FindBtn(int pos)
     {
         int mPos = System.Array.IndexOf(outline_order, 2) + 1, yPos = System.Array.IndexOf(outline_order, 5) + 1;
 
@@ -291,7 +315,24 @@ public class screw : MonoBehaviour {
         }
     }
 
-    void handlePress(int n)
+    bool ColorBlindCheck()
+    {
+        try
+        {
+            ModSettingsJSON settings = JsonConvert.DeserializeObject<ModSettingsJSON>(modSettings.Settings);
+            if (settings != null)
+                return settings.enableColorblindMode;
+            else
+                return false;
+        }
+        catch (JsonReaderException e)
+        {
+            Debug.LogFormat("[Screw #{0}] JSON reading failed with error {1}, assuming colorblind mode is disabled.", _moduleId, e.Message);
+            return false;
+        }
+    }
+
+    void HandlePress(int n)
     {
         Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, btn[n].transform);
         btn[n].AddInteractionPunch();
@@ -314,7 +355,7 @@ public class screw : MonoBehaviour {
                 {
                     Debug.LogFormat("[Screw #{0}] Stage {1} passed! Proceed to next stage.", _moduleId, stageCnt);
                     stageCnt++;
-                    generateStage(stageCnt);
+                    GenerateStage(stageCnt);
                 }
             }
             else
@@ -325,13 +366,13 @@ public class screw : MonoBehaviour {
         }
     }
 
-    void handleScrew(int n)
+    void HandleScrew(int n)
     {
         //unscrew
         if (_screwInsert == true && n + 1 == screwLoc && !_coroutineRunning && _lightsOn && !_isSolved)
         {
             Audio.PlaySoundAtTransform("screwdriver_sound", holes[n].transform);
-            StartCoroutine("screwOut");
+            StartCoroutine("ScrewOut");
         }
 
         //screw
@@ -339,12 +380,12 @@ public class screw : MonoBehaviour {
         {
             screwLoc = n + 1;
             Audio.PlaySoundAtTransform("screwdriver_sound", holes[n].transform);
-            StartCoroutine("screwIn");
+            StartCoroutine("ScrewIn");
             Debug.LogFormat("[Screw #{0}] Screw in to hole {1}", _moduleId, screwLoc);
         }
     }
 
-    IEnumerator screwOut()
+    IEnumerator ScrewOut()
     {
         float smooth = 75f, time = 0.5f;
         float rotateDelta = 1f / (time * smooth), transformDelta = 0.04f / (time * smooth);
@@ -369,7 +410,7 @@ public class screw : MonoBehaviour {
         yield return null;
     }
 
-    IEnumerator screwIn()
+    IEnumerator ScrewIn()
     {
         float smooth = 75f, time = 0.5f;
         float rotateDelta = 1f / (time * smooth), transformDelta = 0.04f / (time * smooth);
