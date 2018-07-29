@@ -35,6 +35,9 @@ public class Screw : MonoBehaviour {
     private readonly float[] holeXPos = { -0.06f, 0f, 0.06f, -0.06f, 0f, 0.06f }, holeZPos = { -0.02f, -0.02f, -0.02f, -0.06f, -0.06f, -0.06f };
     private bool _lightsOn = false, _isSolved = false, _screwInsert = true, _coroutineRunning = false, isColorBlind = false;
 
+    //constants for screw animations
+    private const float smooth = 75f, time = 0.5f;
+
     void Start () {
         _moduleId = _moduleIdCounter++;
         Module.OnActivate += Init;
@@ -387,7 +390,6 @@ public class Screw : MonoBehaviour {
 
     IEnumerator ScrewOut()
     {
-        float smooth = 75f, time = 0.5f;
         float rotateDelta = 1f / (time * smooth), transformDelta = 0.04f / (time * smooth);
         float rotateCurrent = 0f, transformCurrent = -0.02f;
 
@@ -412,7 +414,6 @@ public class Screw : MonoBehaviour {
 
     IEnumerator ScrewIn()
     {
-        float smooth = 75f, time = 0.5f;
         float rotateDelta = 1f / (time * smooth), transformDelta = 0.04f / (time * smooth);
         float rotateCurrent = 0f, transformCurrent = 0.02f;
 
