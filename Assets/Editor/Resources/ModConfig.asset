@@ -14,11 +14,12 @@ MonoBehaviour:
   id: screw
   title: The Screw
   description: "You know what? Screw this module...\r\n\r\nHTML manual: https://ktane.timwi.de/HTML/The%20Screw.html\r\nPDF
-    manual: https://ktane.timwi.de/PDF/The%20Screw.pdf\r\n\r\nModule ID: screw\r\n\r\nIdeas
-    by Zeke\r\n\r\nThis module uses these sounds from freesound:\r\nSocket Wrench
-    by TheGertz ( http://freesound.org/people/TheGertz/ ) The use is under CC BY 3.0
-    license.\r\n\r\nCross Screw model by CaitSith2.\r\n\r\nWorkplace tools asset pack
-    by ikapoura."
+    manual: https://ktane.timwi.de/PDF/The%20Screw.pdf\r\n\nThis module has a colorblind
+    mode. The color of the screw hole outlines will be shown in text.\n\r\nModule
+    ID: screw\r\n\r\nIdeas by Zeke\r\n\r\nThis module uses these sounds from freesound:\r\nSocket
+    Wrench by TheGertz ( http://freesound.org/people/TheGertz/ ) The use is under
+    CC BY 3.0 license.\r\n\r\nCross Screw model by CaitSith2.\r\n\r\nWorkplace tools
+    asset pack by ikapoura."
   version: 2.0
   outputFolder: build
   previewImage: {fileID: 2800000, guid: c4857b685101587468aa0711123c3cf7, type: 3}

@@ -3,22 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
-using KMHelper;
+using KModkit;
 
 public class Screw : MonoBehaviour {
-
-    public class ModSettingsJSON
-    {
-        public bool enableColorblindMode;
-        public string note;
-    }
 
     public KMAudio Audio;
     public KMBombModule Module;
     public KMBombInfo Info;
     public KMSelectable[] holes, btn;
-    public KMModSettings modSettings;
     public GameObject cross_screw, screwdriver;
     public GameObject[] colorblindText;
     public MeshRenderer[] outlines;
@@ -68,7 +60,7 @@ public class Screw : MonoBehaviour {
     void Init()
     {
         //check for color blind mode first!
-        isColorBlind = ColorBlindCheck();
+        isColorBlind = GetComponent<KMColorblindMode>().ColorblindModeActive;
 
         //enable helper texts
         if (isColorBlind)
@@ -315,23 +307,6 @@ public class Screw : MonoBehaviour {
                     Debug.LogFormat("[Screw #{0}] Otherwise: 4th position.", _moduleId);
                 }
             }
-        }
-    }
-
-    bool ColorBlindCheck()
-    {
-        try
-        {
-            ModSettingsJSON settings = JsonConvert.DeserializeObject<ModSettingsJSON>(modSettings.Settings);
-            if (settings != null)
-                return settings.enableColorblindMode;
-            else
-                return false;
-        }
-        catch (JsonReaderException e)
-        {
-            Debug.LogFormat("[Screw #{0}] JSON reading failed with error {1}, assuming colorblind mode is disabled.", _moduleId, e.Message);
-            return false;
         }
     }
 

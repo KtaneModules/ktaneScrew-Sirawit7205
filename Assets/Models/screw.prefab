@@ -437,7 +437,7 @@ GameObject:
   - component: {fileID: 114000011577142444}
   - component: {fileID: 114000013639118666}
   - component: {fileID: 114000011848595940}
-  - component: {fileID: 114251004379658400}
+  - component: {fileID: 114816640163971956}
   m_Layer: 0
   m_Name: screw
   m_TagString: Untagged
@@ -2881,7 +2881,6 @@ MonoBehaviour:
   - {fileID: 114000012478838880}
   - {fileID: 114000013375938264}
   - {fileID: 114000012483812460}
-  modSettings: {fileID: 114251004379658400}
   cross_screw: {fileID: 1000014098735586}
   screwdriver: {fileID: 1000010139837074}
   colorblindText:
@@ -3372,20 +3371,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - GUI/KT 3D Text
---- !u!114 &114251004379658400
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1000013491623846}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -289456416, guid: 45b809be76fd7a3468b6f517bced6f28, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Settings: "{ \t \t \t\"enableColorblindMode\": false, \t\"note\": \"Set enableColorblindMode
-    to true to enable text helpers on the module.\" }"
-  SettingsPath: 
 --- !u!114 &114256695048985432
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3451,6 +3436,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ShaderNames:
   - GUI/KT 3D Text
+--- !u!114 &114816640163971956
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000013491623846}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1cfb889a07d5fd4e9baed7960bb397f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _colorblindMode: 0
 --- !u!136 &136000010659512048
 CapsuleCollider:
   m_ObjectHideFlags: 1
