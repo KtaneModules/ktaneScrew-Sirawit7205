@@ -5,8 +5,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using KModkit;
 
-public class Screw : MonoBehaviour {
-
+public class screw : MonoBehaviour
+{
     public KMAudio Audio;
     public KMBombModule Module;
     public KMBombInfo Info;
@@ -30,11 +30,12 @@ public class Screw : MonoBehaviour {
     //constants for screw animations
     private const float smooth = 75f, time = 0.5f;
 
-    void Start () {
+    void Start()
+    {
         _moduleId = _moduleIdCounter++;
         Module.OnActivate += Init;
     }
-	
+
     private void Awake()
     {
         for (int i = 0; i < 4; i++)
@@ -96,7 +97,7 @@ public class Screw : MonoBehaviour {
         Debug.LogFormat("[Screw #{0}] Order of outlines: TOP {1} {2} {3} BOTTOM {4} {5} {6}", _moduleId
             , colorText[outline_order[0]], colorText[outline_order[1]], colorText[outline_order[2]]
             , colorText[outline_order[3]], colorText[outline_order[4]], colorText[outline_order[5]]);
-        
+
         GenerateStage(1);
         _lightsOn = true;
     }
@@ -120,14 +121,14 @@ public class Screw : MonoBehaviour {
                 {
                     select[rand] = 1;
                     button_order[i] = rand;
-                    btnText[i].text = "" + (char)(rand + 65);
+                    btnText[i].text = "" + (char) (rand + 65);
                 }
                 else rand = -1;
             }
         }
         Debug.LogFormat("[Screw #{0}] Order of buttons: {1} {2} {3} {4}", _moduleId
             , btnText[0].text, btnText[1].text, btnText[2].text, btnText[3].text);
-        
+
         //determine screw position
         if (stage == 1)
         {
@@ -160,7 +161,7 @@ public class Screw : MonoBehaviour {
             pos++;
             Debug.LogFormat("[Screw #{0}] Screw is already in this hole, set to {1}.", _moduleId, pos);
         }
-        while(pos > 6)
+        while (pos > 6)
         {
             pos -= 6;
             Debug.LogFormat("[Screw #{0}] Substract 6 to {1}.", _moduleId, pos);
@@ -175,7 +176,7 @@ public class Screw : MonoBehaviour {
         Debug.LogFormat("[Screw #{0}] Screw must be in {1} {2} hole (position {3})", _moduleId, locations[screwAns - 1], colorText[outline_order[screwAns - 1]].ToLower(), screwAns);
 
         FindBtn(pos);
-        Debug.LogFormat("[Screw #{0}] Must push button {1} at position {2}", _moduleId, (char)(button_order[btnAns] + 65), btnAns + 1);
+        Debug.LogFormat("[Screw #{0}] Must push button {1} at position {2}", _moduleId, (char) (button_order[btnAns] + 65), btnAns + 1);
 
         screenText.text = stage.ToString();
     }
@@ -185,10 +186,10 @@ public class Screw : MonoBehaviour {
         int mPos = System.Array.IndexOf(outline_order, 2) + 1, yPos = System.Array.IndexOf(outline_order, 5) + 1;
 
         //for color R, Y, G
-        if (outline_order[pos-1] % 2 == 1)
+        if (outline_order[pos - 1] % 2 == 1)
         {
             //top row
-            if(pos < 4)
+            if (pos < 4)
             {
                 if (pos == Info.GetBatteryHolderCount())
                 {
@@ -250,7 +251,7 @@ public class Screw : MonoBehaviour {
         else
         {
             //top row
-            if(pos < 4)
+            if (pos < 4)
             {
                 if (pos == Info.GetPorts().Distinct().Count())
                 {
@@ -318,13 +319,13 @@ public class Screw : MonoBehaviour {
         if (_screwInsert && !_coroutineRunning && _lightsOn && !_isSolved)
         {
             Debug.LogFormat("[Screw #{0}] Screw at position {1}, expected {2}.", _moduleId, screwLoc, screwAns);
-            Debug.LogFormat("[Screw #{0}] Pushed button {1} at {2}, expected {3} at {4}.", _moduleId, (char)(button_order[n] + 65), n + 1, (char)(button_order[btnAns] + 65), btnAns + 1);
+            Debug.LogFormat("[Screw #{0}] Pushed button {1} at {2}, expected {3} at {4}.", _moduleId, (char) (button_order[n] + 65), n + 1, (char) (button_order[btnAns] + 65), btnAns + 1);
 
             if (screwLoc == screwAns && n == btnAns)
             {
-                if(stageCnt == 3)
+                if (stageCnt == 3)
                 {
-                    Debug.LogFormat("[Screw #{0}] Stage 3 passed! Module passed!",_moduleId);
+                    Debug.LogFormat("[Screw #{0}] Stage 3 passed! Module passed!", _moduleId);
                     Module.HandlePass();
                     _isSolved = true;
                     screenText.text = string.Empty;
@@ -350,65 +351,41 @@ public class Screw : MonoBehaviour {
         if (_screwInsert == true && n + 1 == screwLoc && !_coroutineRunning && _lightsOn && !_isSolved)
         {
             Audio.PlaySoundAtTransform("screwdriver_sound", holes[n].transform);
-            StartCoroutine("ScrewOut");
+            StartCoroutine(AnimateScrew(screwLoc, screwIn: false));
         }
 
         //screw
-        if(_screwInsert == false && !_coroutineRunning && _lightsOn && !_isSolved)
+        if (_screwInsert == false && !_coroutineRunning && _lightsOn && !_isSolved)
         {
             screwLoc = n + 1;
             Audio.PlaySoundAtTransform("screwdriver_sound", holes[n].transform);
-            StartCoroutine("ScrewIn");
+            StartCoroutine(AnimateScrew(screwLoc, screwIn: true));
             Debug.LogFormat("[Screw #{0}] Screw in to hole {1}", _moduleId, screwLoc);
         }
     }
 
-    IEnumerator ScrewOut()
+    IEnumerator AnimateScrew(int screwIx, bool screwIn)
     {
-        float rotateDelta = 1f / (time * smooth), transformDelta = 0.04f / (time * smooth);
-        float rotateCurrent = 0f, transformCurrent = -0.02f;
-
         _coroutineRunning = true;
-        cross_screw.gameObject.transform.localPosition = new Vector3(holeXPos[screwLoc - 1], transformCurrent, holeZPos[screwLoc - 1]);
-        //screwdriver.GetComponent<MeshRenderer>().enabled = true;
+        cross_screw.SetActive(true);
 
-        for (int i = 0; i <= time * smooth; i++)
+        var duration = .5f;
+        var elapsed = 0f;
+        while (elapsed < duration)
         {
-            cross_screw.gameObject.transform.localPosition = new Vector3(holeXPos[screwLoc - 1], transformCurrent, holeZPos[screwLoc - 1]);
-            cross_screw.gameObject.transform.Rotate(Vector3.up, -15);
-            rotateCurrent += rotateDelta;
-            transformCurrent += transformDelta;
-            yield return new WaitForSeconds(time / smooth);
+            cross_screw.transform.localPosition = new Vector3(holeXPos[screwIx - 1], Mathf.Lerp(screwIn ? .021f : -.021f, screwIn ? -.021f : .021f, elapsed / duration), holeZPos[screwIx - 1]);
+            cross_screw.transform.localEulerAngles = new Vector3(0, (screwIn ? (1 - elapsed / duration) : (elapsed / duration)) * -360f, 0);
+            yield return null;
+            elapsed += Time.deltaTime;
         }
-        //screwdriver.GetComponent<MeshRenderer>().enabled = false;
-        cross_screw.GetComponent<MeshRenderer>().enabled = false;
+        cross_screw.transform.localPosition = new Vector3(holeXPos[screwIx - 1], screwIn ? -.021f : .021f, holeZPos[screwIx - 1]);
+        cross_screw.transform.localEulerAngles = new Vector3(0, (screwIn ? 0 : -360f), 0);
+
+        if (!screwIn)
+            cross_screw.SetActive(false);
+
         _coroutineRunning = false;
-        _screwInsert = false;
-        yield return null;
-    }
-
-    IEnumerator ScrewIn()
-    {
-        float rotateDelta = 1f / (time * smooth), transformDelta = 0.04f / (time * smooth);
-        float rotateCurrent = 0f, transformCurrent = 0.02f;
-
-        _coroutineRunning = true;
-        cross_screw.gameObject.transform.localPosition = new Vector3(holeXPos[screwLoc - 1], transformCurrent, holeZPos[screwLoc - 1]);
-        //screwdriver.GetComponent<MeshRenderer>().enabled = true;
-        cross_screw.GetComponent<MeshRenderer>().enabled = true;
-
-        for (int i = 0; i <= time * smooth; i++)
-        {
-            cross_screw.gameObject.transform.localPosition = new Vector3(holeXPos[screwLoc - 1], transformCurrent, holeZPos[screwLoc - 1]);
-            cross_screw.gameObject.transform.Rotate(Vector3.up, 15);
-            rotateCurrent += rotateDelta;
-            transformCurrent -= transformDelta;
-            yield return new WaitForSeconds(time / smooth);
-        }
-        //screwdriver.GetComponent<MeshRenderer>().enabled = false;
-        _coroutineRunning = false;
-        _screwInsert = true;
-        yield return null;
+        _screwInsert = screwIn;
     }
 
 #pragma warning disable 414
@@ -420,16 +397,16 @@ public class Screw : MonoBehaviour {
         var select = new List<KMSelectable>();
         command = command.ToLowerInvariant().Trim();
 
-        if(command.Equals("unscrew"))
+        if (command.Equals("unscrew"))
         {
             return new[] { holes[screwLoc - 1] };
         }
 
-        if(Regex.IsMatch(command, @"^screw [a-zA-Z1-6]+$"))
+        if (Regex.IsMatch(command, @"^screw [a-zA-Z1-6]+$"))
         {
             command = command.Substring(6).Trim();
 
-            switch(command)
+            switch (command)
             {
                 case "1": case "tl": case "lt": case "topleft": case "lefttop": select.Add(holes[0]); break;
                 case "2": case "tm": case "mt": case "topmiddle": case "middletop": select.Add(holes[1]); break;
@@ -442,11 +419,11 @@ public class Screw : MonoBehaviour {
             return select.ToArray();
         }
 
-        if(Regex.IsMatch(command, @"^press [a-zA-Z1-4]+$"))
+        if (Regex.IsMatch(command, @"^press [a-zA-Z1-4]+$"))
         {
             command = command.Substring(6).Trim();
 
-            switch(command)
+            switch (command)
             {
                 case "1": select.Add(btn[0]); break;
                 case "2": select.Add(btn[1]); break;
